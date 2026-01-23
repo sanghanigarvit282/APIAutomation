@@ -1,23 +1,11 @@
-{
-  "CreateBooking": {
-        "firstname": "",
-        "lastname": "",
-        "totalprice": null,
-        "depositpaid": true,
-        "bookingdates": {
-            "checkin": "2024-01-01",
-            "checkout": "2024-01-05"
-        },
-        "additionalneeds": "Breakfast"
+booking_payload = {
+    "firstname": "Garvit",
+    "lastname": "Sanghani",
+    "totalprice": 233,
+    "depositpaid": True,
+    "bookingdates": {
+        "checkin": "2024-01-01",
+        "checkout": "2024-01-05"
     },
-  "getBooking": {
-        "firstname": "Mark",
-        "lastname": "Smith",
-        "totalprice": 150,
-        "depositpaid": true,
-        "bookingdates": {
-            "checkin": "2024-02-01",
-            "checkout": "2024-02-05"
-        }
-    }
+    "additionalneeds": "Breakfast"
 }
