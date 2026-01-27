@@ -1,5 +1,6 @@
 import pytest
 
+from constants.constants import CREATE_BOOKING, HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from helpers.common_helper import validate_response_fields
 from jsonData import payload as p
 
@@ -16,9 +17,9 @@ def test_create_booking(api_client, firstname, lastname, price):
         "totalprice": price
     })
 
-    response = api_client.post("/booking", json=payload)
+    response = api_client.post(CREATE_BOOKING, json=payload)
 
-    assert response.status_code == 200, (
+    assert response.status_code == HTTP_200_OK, (
         f"Expected status code 200 for booking creation, "
         f"but got {response.status_code}. Response: {response.text}"
     )
@@ -53,9 +54,9 @@ def test_get_booking(api_client, create_booking_fixture):
     booking_response, expected_payload = create_booking_fixture
     booking_id = booking_response.json()["bookingid"]
 
-    get_resp = api_client.get(f"/booking/{booking_id}")
+    get_resp = api_client.get("{}/{}".format(CREATE_BOOKING,booking_id))
 
-    assert get_resp.status_code == 200, (
+    assert get_resp.status_code == HTTP_200_OK, (
         f"Expected status code 200 when fetching booking {booking_id}, "
         f"but got {get_resp.status_code}. Response: {get_resp.text}"
     )
@@ -83,12 +84,12 @@ def test_update_booking(api_client, auth_headers, create_booking_fixture, update
     payload["firstname"] = updated_firstname
 
     update_resp = api_client.put(
-        "/booking/{}".format(booking_id),
+        "{}/{}".format(CREATE_BOOKING,booking_id),
         json=payload,
         headers=auth_headers
     )
 
-    assert update_resp.status_code == 200, (
+    assert update_resp.status_code == HTTP_200_OK, (
         f"Expected status code 200 when updating booking {booking_id}, "
         f"but got {update_resp.status_code}. Response: {update_resp.text}"
     )
@@ -112,20 +113,20 @@ def test_delete_booking(api_client, create_booking_fixture, auth_headers):
     booking_id = booking_response.json()["bookingid"]
 
     delete_resp = api_client.delete(
-        "/booking/{}".format(booking_id),
+        "{}/{}".format(CREATE_BOOKING,booking_id),
         headers=auth_headers
     )
 
-    assert delete_resp.status_code == 201, (
+    assert delete_resp.status_code == HTTP_201_CREATED, (
         f"Expected status code 201 when deleting booking {booking_id}, "
         f"but got {delete_resp.status_code}. Response: {delete_resp.text}"
     )
 
     get_resp = api_client.get(
-        f"/booking/{booking_id}"
+        "{}/{}".format(CREATE_BOOKING, booking_id)
     )
 
-    assert get_resp.status_code == 404, (
+    assert get_resp.status_code == HTTP_404_NOT_FOUND, (
         f"Deleted booking {booking_id} should not exist, "
         f"but GET returned {get_resp.status_code}. Response: {get_resp.text}"
     )
