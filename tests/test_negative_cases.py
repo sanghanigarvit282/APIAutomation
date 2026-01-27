@@ -1,4 +1,7 @@
+import pytest
+
 from constants.constants import CREATE_BOOKING, HTTP_404_NOT_FOUND, HTTP_403_FORBIDDEN, HTTP_405_METHOD_NOT_ALLOWED
+from helpers.payload_builder import build_custom_payload
 
 
 def test_get_non_existing_booking(api_client):
@@ -9,11 +12,19 @@ def test_get_non_existing_booking(api_client):
         "but got {}. Response: {}".format(response.status_code,response.text)
     )
 
-
-def test_update_booking_without_auth(api_client):
-    response = api_client.put("{}/1".format(CREATE_BOOKING), json={
-        "firstname": "Hacker"
-    })
+@pytest.mark.parametrize(
+    "create_booking_fixture",
+    [
+        {"firstname": "John", "lastname": "Wick", "totalprice": 100}
+    ],
+    indirect=True
+)
+@pytest.mark.parametrize("updated_firstname", ["Chris"])
+def test_update_booking_without_auth(api_client, auth_headers, create_booking_fixture, updated_firstname):
+    booking_response, expected_payload = create_booking_fixture
+    booking_id = booking_response.json()["bookingid"]
+    payload = build_custom_payload(firstname=updated_firstname)
+    response = api_client.put("{}/{}".format(CREATE_BOOKING,booking_id), json=payload)
 
     assert response.status_code == HTTP_403_FORBIDDEN, (
         "Expected 403 Forbidden when updating booking without auth, "
