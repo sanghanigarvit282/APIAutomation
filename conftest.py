@@ -59,7 +59,9 @@ def pytest_addoption(parser):
     parser.addoption(
         "--baseurl",
         action="store",
-        default="https://restful-booker.herokuapp.com"
+        default= None,
+        help="Base URL for API execution",
+        type=str
     )
 
 @pytest.fixture(scope="session", autouse=True)
