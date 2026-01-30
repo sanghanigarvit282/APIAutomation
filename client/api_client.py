@@ -8,12 +8,6 @@ from lib.custom_exception import CustomException
 logger = logging.getLogger(__name__)
 
 class APIClient:
-    """
-    A simple HTTP API client wrapper around the requests library.
-    This client provides methods for common HTTP methods
-    (GET, POST, PUT, DELETE) with a configurable base URL and timeout.
-    """
-
     def __init__(self, base_url: str, timeout: int = 5):
         self.base_url = base_url
         self.timeout = timeout

@@ -2,6 +2,7 @@ import pytest
 
 from constants.constants import CREATE_BOOKING, HTTP_404_NOT_FOUND, HTTP_403_FORBIDDEN, HTTP_405_METHOD_NOT_ALLOWED
 from helpers.payload_builder import build_custom_payload
+from jsonData.payload import CREATE_BOOKING_FIXTURE_DATA
 
 
 def test_get_non_existing_booking(api_client):
@@ -14,15 +15,13 @@ def test_get_non_existing_booking(api_client):
 
 @pytest.mark.parametrize(
     "create_booking_fixture",
-    [
-        {"firstname": "John", "lastname": "Wick", "totalprice": 100}
-    ],
+    CREATE_BOOKING_FIXTURE_DATA,
     indirect=True
 )
 @pytest.mark.parametrize("updated_firstname", ["Chris"])
 def test_update_booking_without_auth(api_client, auth_headers, create_booking_fixture, updated_firstname):
-    booking_response, expected_payload = create_booking_fixture
-    booking_id = booking_response.json()["bookingid"]
+    booking_id, expected_payload = create_booking_fixture
+
     payload = build_custom_payload(firstname=updated_firstname)
     response = api_client.put("{}/{}".format(CREATE_BOOKING,booking_id), json=payload)
 

@@ -5,12 +5,6 @@ from lib.custom_exception import CustomException
 
 
 def validate_response_fields(expected_response, actual_response):
-    """
-    This method validates expected response schema with API response
-    :param expected_response: {dict}
-    :param actual_response: {dict}
-    :return: None
-    """
     missing_parameters = []
     for keys in expected_response.keys():
         if keys not in actual_response:
@@ -21,12 +15,6 @@ def validate_response_fields(expected_response, actual_response):
 
 
 def validate_booking_business_data(expected_payload, actual_response):
-    """
-    This method validates all key values from expected schema to actual API response
-    :param expected_payload: {dict}
-    :param actual_response: {dict}
-    :return: [list] containing mismatched keys, values
-    """
     mismatched_data = []
     logging.info("Expected schema '{}', API Response'{}'".format(expected_payload, actual_response))
 

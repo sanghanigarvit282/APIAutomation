@@ -18,3 +18,16 @@ sample_booking_payload = {
     },
     "additionalneeds": "Breakfast"
 }
+
+CREATE_BOOKING_DATA = [
+    ("John", "Wick", 100),
+    ("Alice", "Wonder", 200)
+]
+
+CREATE_BOOKING_FIXTURE_DATA = [
+    {
+        "firstname": "John",
+        "lastname": "Wick",
+        "totalprice": 100
+    }
+]

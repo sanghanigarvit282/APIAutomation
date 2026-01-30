@@ -8,17 +8,15 @@ from client.api_client import APIClient
 from lib.read_config import ConfigReader
 
 @pytest.fixture(scope="session")
-def api_client():
-    config = ConfigReader()
-    base_url = config.get_url()
+def api_client(config_env):
+    base_url = config_env.get_url()
     return APIClient(base_url)
 
 @pytest.fixture(scope="session")
-def auth_token(api_client):
-    config = ConfigReader()
+def auth_token(config_env,api_client):
     payload = {
-        "username": config.get_username(),
-        "password": config.get_password()
+        "username": config_env.get_username(),
+        "password": config_env.get_password()
     }
     response = api_client.post("/auth", json=payload)
     assert response.status_code == 200, "Auth token creation failed"
@@ -51,33 +49,12 @@ def pytest_html_report_title(report):
     report.title = "API Automation Test Report"
 
 def pytest_addoption(parser):
-    """
-    Based on the argument, set the config parameters
-    :param parser: {object} parser object
-    :return: None
-    """
     parser.addoption(
-        "--baseurl",
+        "--env",
         action="store",
-        default= None,
-        help="Base URL for API execution",
-        type=str
+        default="dev",
+        help="Environment to run tests against (dev / prod)"
     )
-
-@pytest.fixture(scope="session", autouse=True)
-def apply_cli_overrides(request):
-    """
-    Applies command-line configuration overrides to the framework settings.
-
-    This function reads values passed via pytest command-line arguments
-    (such as browser, environment, or base URL) and overrides the
-    corresponding configuration values loaded from the config file.
-    """
-    config = ConfigReader()
-    base_url = request.config.getoption("--baseurl")
-
-    if base_url:
-        config.set_override("url", base_url)
 
 def pytest_configure(config):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
@@ -91,3 +68,8 @@ def pytest_configure(config):
     global_variables.current_run_dir = run_dir
 
     config.option.htmlpath = global_variables.report_path
+
+@pytest.fixture(scope="session")
+def config_env(request):
+    env = request.config.getoption("--env")
+    return ConfigReader(env)
