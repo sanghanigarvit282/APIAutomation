@@ -2,6 +2,8 @@ import configparser
 import logging
 from pathlib import Path
 
+import pytest
+
 
 class ConfigReader:
     def __init__(self, env="dev"):
@@ -12,7 +14,11 @@ class ConfigReader:
             raise FileNotFoundError(f"config.ini not found at {config_path}")
         self._config.read(config_path)
         if env not in self._config:
-            raise ValueError(f"Environment '{env}' not found in config.ini")
+            pytest.exit(
+                f"Invalid environment '{env}'. "
+                f"Available envs: {list(self._config.sections())}",
+                returncode=1
+            )
         logging.info(
             "Using env='%s', url='%s', username='%s', password='%s'",
             self.env,

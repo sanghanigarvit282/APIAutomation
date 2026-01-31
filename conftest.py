@@ -33,12 +33,12 @@ def auth_headers(auth_token):
         "Content-Type": "application/json"
     }
 
-def pytest_metadata(metadata):
+def pytest_metadata(config, metadata):
     metadata.clear()
     metadata.update({
         "Project Name": "API Automation",
         "Tester": "Garvit Sanghani",
-        "Environment": "QA",
+        "Environment": config.getoption("--env").upper(),
         "OS": "Windows",
         "Python Version": "3.9",
         "Framework": "PyTest + Requests",
